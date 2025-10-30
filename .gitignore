@@ -102,6 +102,9 @@ data/*/
 # Keep data directory structure but ignore contents
 !data/.gitkeep
 
+# Working directory (features, themes, development files)
+working/
+
 # OS generated files
 .DS_Store
 .DS_Store?
