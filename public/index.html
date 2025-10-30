@@ -12,27 +12,139 @@
     <link href="/assets/css/styles.css" rel="stylesheet">
     <link href="/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet">
     
+    <!-- Theme System CSS -->
+    <link href="/assets/css/themes.css" rel="stylesheet">
+    
     <style>
-        body { font-family: Inter, sans-serif; }
-        .container-fluid { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .card { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .card-header { padding: 20px 20px 0; border-bottom: 1px solid #eee; }
-        .card-body { padding: 20px; }
+        body { 
+            font-family: Inter, sans-serif; 
+            background-color: var(--theme-bg-primary);
+            color: var(--theme-text-primary);
+            transition: var(--theme-transition);
+        }
+        .container-fluid { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background-color: var(--theme-bg-primary);
+        }
+        .card { 
+            background: var(--theme-card-bg); 
+            border: 1px solid var(--theme-border-color);
+            border-radius: 8px; 
+            box-shadow: var(--theme-card-shadow); 
+            margin-bottom: 20px; 
+            transition: var(--theme-transition);
+        }
+        .card-header { 
+            padding: 20px 20px 0; 
+            border-bottom: 1px solid var(--theme-border-color); 
+            background-color: var(--theme-card-bg);
+            color: var(--theme-text-primary);
+        }
+        .card-body { 
+            padding: 20px; 
+            background-color: var(--theme-card-bg);
+            color: var(--theme-text-primary);
+        }
         .row { display: flex; flex-wrap: wrap; margin: -10px; }
         .col { flex: 1; padding: 10px; min-width: 250px; }
-        .stats-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 30px; border-radius: 12px; }
+        .stats-card { 
+            color: white; 
+            text-align: center; 
+            padding: 30px; 
+            border-radius: 12px; 
+            transition: var(--theme-transition);
+        }
         .stats-number { font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
         .stats-label { opacity: 0.9; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; }
-        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; }
-        .btn-primary { background: #3f83f8; color: white; }
+        .form-control { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--theme-input-border); 
+            background-color: var(--theme-input-bg);
+            color: var(--theme-text-primary);
+            border-radius: 6px; 
+            margin: 10px 0; 
+            transition: var(--theme-transition);
+        }
+        .form-control:focus {
+            border-color: var(--theme-button-bg);
+            outline: none;
+        }
+        .form-control::placeholder {
+            color: var(--theme-text-muted);
+        }
+        .btn { 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            transition: var(--theme-transition);
+        }
+        .btn-primary { 
+            background: var(--theme-button-bg); 
+            color: white; 
+        }
+        .btn-primary:hover {
+            background: var(--theme-button-hover);
+        }
         .btn-danger { background: #f05252; color: white; }
         .btn-success { background: #10b981; color: white; }
-        .progress { background: #f3f4f6; border-radius: 6px; height: 8px; overflow: hidden; }
-        .progress-bar { background: #3f83f8; height: 100%; transition: width 0.3s; }
-        .badge { padding: 4px 12px; border-radius: 12px; font-size: 0.875rem; }
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-primary { background: #dbeafe; color: #1e40af; }
+        .progress { 
+            background: var(--theme-bg-tertiary); 
+            border-radius: 6px; 
+            height: 8px; 
+            overflow: hidden; 
+        }
+        .progress-bar { 
+            background: var(--theme-button-bg); 
+            height: 100%; 
+            transition: width 0.3s, background-color 0.3s; 
+        }
+        .badge { 
+            padding: 4px 12px; 
+            border-radius: 12px; 
+            font-size: 0.875rem; 
+        }
+        .badge-success { 
+            background: #198754; 
+            color: white; 
+        }
+        .badge-primary { 
+            background: var(--theme-button-bg); 
+            color: white; 
+        }
+        
+        /* Theme Controls Styling */
+        .theme-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .theme-toggle:hover .theme-toggle-slider {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card-header > div {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .theme-controls {
+                align-self: flex-end;
+            }
+        }
     </style>
 </head>
 <body>
@@ -41,8 +153,19 @@
         <!-- Header -->
         <div class="card">
             <div class="card-header">
-                <h1>🎬 Torrent Streamer</h1>
-                <p>Stream torrents directly in your browser</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1>🎬 Torrent Streamer</h1>
+                        <p>Stream torrents directly in your browser</p>
+                    </div>
+                    <div class="theme-controls">
+                        <div class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Theme">
+                            <div class="theme-toggle-slider">
+                                <span class="theme-toggle-icon" id="theme-icon">☀️</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -1,0 +1,220 @@
+/* 
+ * Torrent Streamer - Theme System
+ * Dark/Light theme variables and styling
+ */
+
+/* CSS Custom Properties for Theme System */
+:root {
+    /* Light Theme Variables (Default) */
+    --theme-bg-primary: #ffffff;
+    --theme-bg-secondary: #f8f9fa;
+    --theme-bg-tertiary: #e9ecef;
+    --theme-text-primary: #212529;
+    --theme-text-secondary: #6c757d;
+    --theme-text-muted: #adb5bd;
+    --theme-border-color: #dee2e6;
+    --theme-card-bg: #ffffff;
+    --theme-card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    --theme-input-bg: #ffffff;
+    --theme-input-border: #ced4da;
+    --theme-button-bg: #007bff;
+    --theme-button-hover: #0056b3;
+    
+    /* Stats Card Gradients - Light */
+    --theme-gradient-1: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --theme-gradient-2: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --theme-gradient-3: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --theme-gradient-4: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    
+    /* Transition for smooth theme switching */
+    --theme-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+    --theme-bg-primary: #1a1a1a;
+    --theme-bg-secondary: #2d2d2d;
+    --theme-bg-tertiary: #3d3d3d;
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #b3b3b3;
+    --theme-text-muted: #808080;
+    --theme-border-color: #404040;
+    --theme-card-bg: #2d2d2d;
+    --theme-card-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    --theme-input-bg: #3d3d3d;
+    --theme-input-border: #555555;
+    --theme-button-bg: #0d6efd;
+    --theme-button-hover: #0b5ed7;
+    
+    /* Stats Card Gradients - Dark (slightly muted) */
+    --theme-gradient-1: linear-gradient(135deg, #d63384 0%, #dc3545 100%);
+    --theme-gradient-2: linear-gradient(135deg, #0dcaf0 0%, #198754 100%);
+    --theme-gradient-3: linear-gradient(135deg, #20c997 0%, #0dcaf0 100%);
+    --theme-gradient-4: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+}
+
+/* Theme-aware component styles */
+body {
+    background-color: var(--theme-bg-primary);
+    color: var(--theme-text-primary);
+    transition: var(--theme-transition);
+}
+
+.container-fluid {
+    background-color: var(--theme-bg-primary);
+}
+
+.card {
+    background: var(--theme-card-bg) !important;
+    border: 1px solid var(--theme-border-color) !important;
+    box-shadow: var(--theme-card-shadow) !important;
+    color: var(--theme-text-primary) !important;
+    transition: var(--theme-transition);
+}
+
+.card-header {
+    background-color: var(--theme-bg-secondary) !important;
+    border-bottom: 1px solid var(--theme-border-color) !important;
+    color: var(--theme-text-primary) !important;
+}
+
+.card-body {
+    background-color: var(--theme-card-bg) !important;
+    color: var(--theme-text-primary) !important;
+}
+
+/* Form Controls */
+.form-control {
+    background-color: var(--theme-input-bg) !important;
+    border-color: var(--theme-input-border) !important;
+    color: var(--theme-text-primary) !important;
+    transition: var(--theme-transition);
+}
+
+.form-control:focus {
+    background-color: var(--theme-input-bg) !important;
+    border-color: var(--theme-button-bg) !important;
+    color: var(--theme-text-primary) !important;
+}
+
+.form-control::placeholder {
+    color: var(--theme-text-muted) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--theme-button-bg) !important;
+    border-color: var(--theme-button-bg) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--theme-button-hover) !important;
+    border-color: var(--theme-button-hover) !important;
+}
+
+/* Stats Cards with Theme-aware Gradients */
+.stats-card:nth-child(1) {
+    background: var(--theme-gradient-1) !important;
+}
+
+.stats-card:nth-child(2) {
+    background: var(--theme-gradient-2) !important;
+}
+
+.stats-card:nth-child(3) {
+    background: var(--theme-gradient-3) !important;
+}
+
+.stats-card:nth-child(4) {
+    background: var(--theme-gradient-4) !important;
+}
+
+/* Text colors */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--theme-text-primary) !important;
+}
+
+p {
+    color: var(--theme-text-secondary) !important;
+}
+
+small, .text-muted {
+    color: var(--theme-text-muted) !important;
+}
+
+/* Badge styling */
+.badge-primary {
+    background: var(--theme-button-bg) !important;
+    color: white !important;
+}
+
+.badge-success {
+    background: #198754 !important;
+    color: white !important;
+}
+
+/* Progress bars */
+.progress {
+    background-color: var(--theme-bg-tertiary) !important;
+}
+
+.progress-bar {
+    background-color: var(--theme-button-bg) !important;
+    transition: var(--theme-transition);
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+    position: relative;
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-border-color);
+    border-radius: 25px;
+    width: 50px;
+    height: 26px;
+    cursor: pointer;
+    transition: var(--theme-transition);
+    padding: 2px;
+}
+
+.theme-toggle:hover {
+    border-color: var(--theme-button-bg);
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--theme-button-bg);
+    border-radius: 50%;
+    transition: var(--theme-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+}
+
+[data-theme="dark"] .theme-toggle-slider {
+    transform: translateX(22px);
+}
+
+.theme-toggle-icon {
+    transition: var(--theme-transition);
+}
+
+/* Animation classes */
+.theme-transition {
+    transition: var(--theme-transition);
+}
+
+/* Smooth page transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Override any conflicting Metronic styles */
+.theme-aware * {
+    transition: var(--theme-transition);
+}

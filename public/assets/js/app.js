@@ -1,15 +1,101 @@
 // Torrent Streamer - Metronic Integration
 "use strict";
 
+// Theme Management System
+class ThemeManager {
+    constructor() {
+        this.currentTheme = this.getStoredTheme() || this.getSystemPreference();
+        this.init();
+    }
+
+    init() {
+        this.applyTheme(this.currentTheme);
+        this.bindThemeToggle();
+        this.updateThemeIcon();
+    }
+
+    getSystemPreference() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    getStoredTheme() {
+        return localStorage.getItem('torrent-streamer-theme');
+    }
+
+    storeTheme(theme) {
+        localStorage.setItem('torrent-streamer-theme', theme);
+    }
+
+    applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        this.currentTheme = theme;
+        this.storeTheme(theme);
+        this.updateThemeIcon();
+    }
+
+    toggleTheme() {
+        const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        this.applyTheme(newTheme);
+    }
+
+    updateThemeIcon() {
+        const iconElement = document.getElementById('theme-icon');
+        if (iconElement) {
+            // Add rotation animation
+            iconElement.style.transform = 'rotate(180deg) scale(0.8)';
+            
+            setTimeout(() => {
+                iconElement.textContent = this.currentTheme === 'light' ? '☀️' : '🌙';
+                iconElement.style.transform = 'rotate(360deg) scale(1)';
+            }, 150);
+            
+            setTimeout(() => {
+                iconElement.style.transform = 'rotate(0deg) scale(1)';
+            }, 300);
+        }
+    }
+
+    bindThemeToggle() {
+        const toggleButton = document.getElementById('theme-toggle');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                this.toggleTheme();
+            });
+        }
+        
+        // Add keyboard shortcut (Ctrl/Cmd + Shift + T)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                this.toggleTheme();
+            }
+        });
+    }
+
+    // Listen for system theme changes
+    watchSystemTheme() {
+        if (window.matchMedia) {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addListener((e) => {
+                if (!this.getStoredTheme()) {
+                    this.applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+    }
+}
+
 // Application class
 class TorrentStreamer {
     constructor() {
         this.API = "";
         this.updateTimer = null;
+        this.themeManager = null;
     }
 
     // Initialize the application
     init() {
+        this.themeManager = new ThemeManager();
         this.bindEvents();
         this.startUpdates();
     }
