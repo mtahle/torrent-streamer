@@ -1,0 +1,52 @@
+{
+  "name": "torrent-streamer",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Lightweight torrent streaming server with WebTorrent. Stream movies directly from magnet links with instant playback.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop torrent-streamer",
+    "pm2:restart": "pm2 restart torrent-streamer",
+    "pm2:logs": "pm2 logs torrent-streamer"
+  },
+  "keywords": [
+    "torrent",
+    "streaming",
+    "webtorrent",
+    "p2p",
+    "video",
+    "movies",
+    "magnet",
+    "http-streaming",
+    "express",
+    "nodejs"
+  ],
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com",
+    "url": "https://github.com/yourusername"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/torrent-streamer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/torrent-streamer/issues"
+  },
+  "homepage": "https://github.com/yourusername/torrent-streamer#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mime": "^4.1.0",
+    "range-parser": "^1.2.1",
+    "webtorrent": "^2.8.4"
+  }
+}

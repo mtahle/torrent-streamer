@@ -1,0 +1,3 @@
+# This directory contains downloaded torrent files
+# Add your downloaded content here
+# The .gitignore will prevent these files from being committed to git
