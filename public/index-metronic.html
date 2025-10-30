@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Torrent Streamer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" rel="stylesheet">
+    
+    <!-- Metronic CSS -->
+    <link href="/assets/css/styles.css" rel="stylesheet">
+    <link href="/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet">
+    
+    <style>
+        body { font-family: Inter, sans-serif; }
+        .container-fluid { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card-header { padding: 20px 20px 0; border-bottom: 1px solid #eee; }
+        .card-body { padding: 20px; }
+        .row { display: flex; flex-wrap: wrap; margin: -10px; }
+        .col { flex: 1; padding: 10px; min-width: 250px; }
+        .stats-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 30px; border-radius: 12px; }
+        .stats-number { font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
+        .stats-label { opacity: 0.9; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; }
+        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .btn-primary { background: #3f83f8; color: white; }
+        .btn-danger { background: #f05252; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .progress { background: #f3f4f6; border-radius: 6px; height: 8px; overflow: hidden; }
+        .progress-bar { background: #3f83f8; height: 100%; transition: width 0.3s; }
+        .badge { padding: 4px 12px; border-radius: 12px; font-size: 0.875rem; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-primary { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        
+        <!-- Header -->
+        <div class="card">
+            <div class="card-header">
+                <h1>🎬 Torrent Streamer</h1>
+                <p>Stream torrents directly in your browser</p>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row">
+            <div class="col">
+                <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="stats-number" id="active-torrents">0</div>
+                    <div class="stats-label">Active Torrents</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="stats-number" id="download-speed">0 MB/s</div>
+                    <div class="stats-label">Download Speed</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stats-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="stats-number" id="upload-speed">0 MB/s</div>
+                    <div class="stats-label">Upload Speed</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="stats-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <div class="stats-number" id="peer-count">0</div>
+                    <div class="stats-label">Connected Peers</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col" style="flex: 2;">
+                
+                <!-- Add Torrent -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Add New Torrent</h3>
+                    </div>
+                    <div class="card-body">
+                        <input type="text" id="magnet-input" class="form-control" placeholder="Paste magnet link here...">
+                        <div style="margin-top: 15px;">
+                            <button id="start-btn" class="btn btn-primary" style="margin-right: 10px;">
+                                ▶️ Start Streaming
+                            </button>
+                            <button id="stop-btn" class="btn btn-danger">
+                                ⏹️ Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Current Status</h3>
+                        <span class="badge badge-primary" id="status-badge">Idle</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="status-text">No active torrents</div>
+                        
+                        <div id="progress-container" style="margin-top: 20px; display: none;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Progress</span>
+                                <span id="progress-text">0%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Selection -->
+                <div class="card" id="file-selection-card" style="display: none;">
+                    <div class="card-header">
+                        <h3>Select File</h3>
+                    </div>
+                    <div class="card-body">
+                        <select id="file-select" class="form-control" style="margin-bottom: 15px;">
+                            <option>No files available</option>
+                        </select>
+                        <button id="select-file-btn" class="btn btn-success">
+                            ✅ Select File
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stream Player -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Stream Player</h3>
+                    </div>
+                    <div class="card-body" style="text-align: center; min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+                        <div id="stream-area">
+                            <div style="font-size: 4rem; margin-bottom: 20px;">🎥</div>
+                            <div style="color: #666; margin-bottom: 10px;">No stream available</div>
+                            <div style="color: #999; font-size: 0.9rem;">Start a torrent to begin streaming</div>
+                        </div>
+                        
+                        <div id="stream-controls" style="margin-top: 20px; display: none;">
+                            <a href="#" id="stream-link" class="btn btn-primary" target="_blank" style="display: inline-block; text-decoration: none;">
+                                🎬 Open Stream
+                            </a>
+                            <div style="margin-top: 10px; color: #666; font-size: 0.85rem;">
+                                Or open in VLC: Media → Open Network Stream
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/assets/js/core.bundle.js"></script>
+    <script src="/assets/js/app.js"></script>
+</body>
+</html>

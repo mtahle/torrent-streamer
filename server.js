@@ -15,6 +15,8 @@ app.use(express.json());
 
 // serve the simple UI
 app.use(express.static(path.join(__dirname, "public")));
+// serve Metronic assets
+app.use('/assets', express.static(path.join(__dirname, "public/assets")));
 
 const client = new WebTorrent();
 let active = {
