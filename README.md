@@ -34,7 +34,7 @@ A lightweight, fast torrent streaming server built with Node.js and WebTorrent. 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/torrent-streamer.git
+git clone https://github.com/mtahle/torrent-streamer.git
 cd torrent-streamer
 
 # Install dependencies
@@ -260,9 +260,9 @@ This software is for educational purposes. Users are responsible for ensuring th
 
 ## 🙋‍♂️ Support
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/torrent-streamer/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/torrent-streamer/discussions)
-- 📧 **Contact**: [your.email@example.com](mailto:your.email@example.com)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/mtahle/torrent-streamer/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/mtahle/torrent-streamer/discussions)
+- 📧 **Contact**: [mtahle@users.noreply.github.com](mailto:mtahle@users.noreply.github.com)
 
 ## 🌟 Acknowledgments
 

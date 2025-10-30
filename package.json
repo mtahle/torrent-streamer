@@ -25,18 +25,18 @@
     "nodejs"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com",
-    "url": "https://github.com/yourusername"
+    "name": "mtahle",
+    "email": "mtahle@users.noreply.github.com",
+    "url": "https://github.com/mtahle"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/torrent-streamer.git"
+    "url": "https://github.com/mtahle/torrent-streamer.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/torrent-streamer/issues"
+    "url": "https://github.com/mtahle/torrent-streamer/issues"
   },
-  "homepage": "https://github.com/yourusername/torrent-streamer#readme",
+  "homepage": "https://github.com/mtahle/torrent-streamer#readme",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
