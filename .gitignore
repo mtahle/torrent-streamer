@@ -127,3 +127,18 @@ Thumbs.db
 *-old
 *-backup
 *.old
+# Database files (keep structure, ignore data)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Downloaded media files
+*.mkv
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm

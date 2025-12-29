@@ -1,56 +1,76 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.0.0] - 2025-10-30
+## [0.2.0] - 2025-12-29
 
 ### Added
-- Initial release of Torrent Streamer
-- WebTorrent-based P2P streaming
-- RESTful API for torrent management
-- Web interface for easy usage
-- HTTP range request support for video players
-- Multi-file torrent support with file selection
-- Real-time download progress and stats
-- PM2 production deployment support
-- Auto-restart and error handling
-- Comprehensive API documentation
-- Management scripts for easy operation
+#### Dashboard Enhancements
+- **Embedded Video Player**: HTML5 video player with native controls (play, pause, seek, volume, fullscreen)
+  - Automatically loads `/stream` when active torrent detected
+  - Hidden when no stream is active
+  - Clean integration with dashboard layout
 
-### Features
-- Start/stop torrents via API or web interface
-- Stream videos while downloading
-- Compatible with VLC, browsers, and mobile players
-- File selection for multi-file torrents
-- Real-time peer and speed information
-- Health check endpoints
-- Production-ready with PM2 integration
+- **DLNA Cast Button**: One-click casting to DLNA devices
+  - Automatically detects available DLNA devices
+  - Shows/hides based on stream status
+  - Integrated with existing DLNA manager
 
-### API Endpoints
-- `POST /start` - Start torrent streaming
-- `POST /stop` - Stop current torrent
-- `POST /select` - Select specific file
-- `GET /status` - Download progress and stats
-- `GET /files` - List torrent files
-- `GET /stream` - Stream video content
-- `GET /healthz` - Health check
+- **Enhanced Stream Controls**:
+  - Cast to DLNA button in Start Stream tab
+  - Video player section with proper state management
+  - Improved stop stream flow (stops video player + torrent)
 
-### Documentation
-- Complete README with examples
-- API reference documentation
-- Installation and deployment guides
-- Contributing guidelines
-- MIT License
+#### Documentation
+- **ROADMAP.md**: Comprehensive project roadmap including:
+  - Completed features checklist
+  - Current sprint tasks (Dashboard Enhancements)
+  - Next sprint (AirPlay Support)
+  - Future features (Media Management, Advanced Streaming, UX, Social)
+  - **Hardware Remote Control** specification:
+    - ESP32/Wemos D1 Mini + I2C OLED (128x64)
+    - WiFi connectivity, REST API integration
+    - Display: Movie title, playback status, progress bar, volume
+    - Controls: Rotary encoder, navigation buttons, action buttons
+    - Estimated cost: $15-30 per unit
+    - 4-week development timeline
+  - Infrastructure plans (DevOps, Security, Scalability)
+  - Community & Documentation goals
 
-## [Unreleased]
+### Fixed
+- **Status Endpoint**: Added `title` field to `/status` response
+- **Speed Conversion**: Download/upload speeds now properly converted to MB/s
+- **Progress Bar**: Fixed percentage calculation (was multiplying by 100 twice)
+- **Duplicate Movies**: Fixed inf oHash-based movie lookup to prevent duplicates
+- **Database Validation**: Skip infoHash update if already set (prevents unique constraint errors)
 
-### Planned
-- Docker containerization
-- Configuration file support
-- Download queue management
-- User authentication (optional)
-- Subtitle support
-- Mobile-responsive interface improvements
+### Changed
+- **Movie Lookup**: Now searches by infoHash first, then magnetUri
+- **UI Backups**: Auto-backup before modifications (`index-backup-YYYYMMDD-HHMMSS.html`)
+- **Video Player**: Integrated directly in dashboard instead of separate modal
+
+### Technical Details
+- Fixed multiple syntax errors in `server.js` and `src/database.js`
+- Enhanced error logging in `updateMovieStatus` to show field-level validation errors
+- Improved `addMovie` function with better deduplication logic
+- Added video player lifecycle management (load, play, stop, cleanup)
+
+## [0.1.0] - 2025-12-28
+
+### Initial Release
+- Multi-protocol torrent streaming (HTTP, DLNA, RTP/UDP, SAP)
+- Modern responsive UI with dark/light themes
+- Real-time statistics dashboard
+- DLNA device discovery and casting
+- SQLite database with Sequelize ORM
+- Torrent metadata extraction
+- Session management
+- Watch history and bookmarks
+
+---
+
+## Upcoming in v0.3.0
+- Library tab with movie grid view
+- Watch history timeline
+- Bookmark management
+- Search and filtering
+- AirPlay device discovery
+- AirPlay casting support
