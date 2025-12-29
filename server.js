@@ -189,7 +189,9 @@ const shutdown = () => {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-const PORT = 8881;
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`Streamer on http://0.0.0.0:${PORT}`)
-);
+const PORT = Number(process.env.PORT) || 8881;
+const HOST = process.env.HOST || "0.0.0.0";
+
+app.listen(PORT, HOST, () => {
+  console.log(`Streamer on http://${HOST}:${PORT}`);
+});

@@ -66,13 +66,15 @@ pm2 save
 
 ### Web Interface
 
-1. Open `http://localhost:8881` in your browser
+1. Open `http://localhost:8881` in your browser (served from `public/index.html`)
 2. Paste a magnet link in the input field
 3. Click **Start** to begin streaming
 4. Copy the **Stream URL** and open it in:
    - **VLC**: `Media → Open Network Stream`
    - **Browser**: Paste URL directly
    - **Mobile Players**: Any player supporting HTTP streams
+
+Other HTML UI prototypes are kept under `docs/ui-variants/` and are not served by the app.
 
 ### API Usage
 
@@ -188,10 +190,11 @@ torrent-streamer/
 ├── package.json           # Dependencies and scripts
 ├── ecosystem.config.js    # PM2 configuration
 ├── pm2-control.sh         # Management script
+├── docs/                  # Supplemental documentation
 ├── public/
 │   └── index.html         # Web interface
 ├── data/                  # Downloaded torrent files (gitignored)
-├── logs/                  # Application logs (gitignored)
+├── logs/                  # Application logs (created by PM2, gitignored)
 └── README.md              # This file
 ```
 
@@ -200,6 +203,7 @@ torrent-streamer/
 ### Environment Variables
 
 - `PORT` - Server port (default: 8881)
+- `HOST` - Bind address (default: 0.0.0.0)
 - `NODE_ENV` - Environment mode (development/production)
 
 ### PM2 Configuration
@@ -244,11 +248,7 @@ curl http://localhost:8881/healthz
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📝 License
 
