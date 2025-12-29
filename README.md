@@ -1,8 +1,8 @@
-# 🎬 Torrent Stream Server
+# Torrent Streamer
 
-A powerful, feature-rich torrent streaming platform with multi-protocol support (HTTP, DLNA, RTP/UDP, AirPlay), library management, and a modern web interface.
+Lightweight torrent streaming server built with Node.js and WebTorrent. Start playback while the torrent downloads (HTTP range supported).
 
-## ✨ Features
+## Features
 
 ### 🎯 Core Streaming
 - **Instant Streaming**: Start watching while downloading with WebTorrent
@@ -44,181 +44,81 @@ A powerful, feature-rich torrent streaming platform with multi-protocol support 
 # Clone the repository
 git clone https://github.com/yourusername/torrent-streamer.git
 cd torrent-streamer
-
-# Install dependencies
 npm install
-
-# Start the server
-pm2 start ecosystem.config.js
-
-# Access the web interface
-open http://localhost:8881
+npm start
 ```
 
-### Environment Variables
+Open `http://localhost:8881`.
 
-Create a `.env` file:
+## Usage
+
+### Web UI
+
+- Open `/` in a browser, paste a magnet link, press Start.
+- Copy the stream URL into a player (VLC: “Open Network Stream…”).
+
+Note: `docs/ui-variants/` contains older HTML experiments and is not served by `server.js`.
+
+### API
+
+Start a torrent (replaces any currently-running torrent):
 
 ```bash
-PORT=8881
-HOST=0.0.0.0
-NODE_ENV=production
+curl -X POST http://localhost:8881/start \
+  -H "Content-Type: application/json" \
+  -d '{"magnet":"magnet:?xt=urn:btih:..."}'
 ```
 
-## 📖 Documentation
+List files and select a specific file (useful for bundles):
 
-- [Quick Start Guide](QUICK_START.md)
-- [VLC Streaming Guide](VLC_STREAMING_GUIDE.md)
-- [RTP/UDP VLC Guide](RTP_UDP_VLC_GUIDE.md)
-- [Subtitle Support](SUBTITLE_SUPPORT.md)
-- [DLNA Features](DLNA_FEATURES.md)
-- [UI Enhancements](UI_ENHANCEMENTS.md)
-- [Project Summary](PROJECT_SUMMARY.md)
-- [Roadmap](ROADMAP.md)
-
-## 🎮 Usage
-
-### Starting a Stream
-
-1. Navigate to the **Start Stream** tab
-2. Paste a magnet URI
-3. Optionally add metadata (title, quality, year)
-4. Click **Start Streaming**
-
-### Casting to Devices
-
-**DLNA:**
-1. Ensure your DLNA device is on the same network
-2. Click **Cast to DLNA** in Stream Controls
-3. Select your device from the list
-
-**AirPlay:**
-1. Ensure your AirPlay device is discoverable
-2. Click **Cast to AirPlay** in Stream Controls
-3. Select your Apple TV or AirPlay device
-
-### Managing Your Library
-
-1. Go to the **Library** tab
-2. View all your streamed content
-3. Use filters to find specific items
-4. Bookmark favorites or resume watching
-
-### RTP/UDP Streaming
-
-1. Navigate to the **RTP/UDP** tab
-2. Configure multicast settings
-3. Click **Start RTP Stream**
-4. Use VLC or compatible player to connect
-
-## 🏗️ Architecture
-
-```
-torrent-streamer/
-├── server.js              # Main Express server
-├── src/
-│   ├── airplay.js         # AirPlay device management
-│   ├── dlna.js            # DLNA/UPnP implementation
-│   ├── rtp-streamer.js    # RTP/UDP streaming
-│   ├── sap-announcer.js   # SAP announcements
-│   ├── database.js        # Sequelize ORM setup
-│   └── models/            # Database models
-│       ├── Movie.js
-│       ├── WatchHistory.js
-│       ├── Bookmark.js
-│       └── ActiveSession.js
-├── public/
-│   └── index.html         # Web UI
-├── data/                  # Media and database storage
-└── docs/                  # Documentation
+```bash
+curl http://localhost:8881/files
+curl -X POST http://localhost:8881/select -H "Content-Type: application/json" -d '{"index":0}'
 ```
 
-## 🔌 API Endpoints
+Stream the selected file:
 
-### Streaming
-- `POST /start` - Start new torrent stream
-- `GET /stream` - HTTP stream endpoint
-- `GET /stop` - Stop active stream
-- `GET /status` - Get stream status
+- `http://localhost:8881/stream`
 
-### DLNA
-- `GET /api/dlna/devices` - List DLNA devices
-- `POST /api/dlna/cast` - Cast to DLNA device
-- `POST /api/dlna/control` - Control DLNA playback
-- `GET /api/dlna/status` - Get DLNA status
+## API reference
 
-### AirPlay
-- `GET /api/airplay/devices` - List AirPlay devices
-- `POST /api/airplay/cast` - Cast to AirPlay device
-- `POST /api/airplay/control` - Control AirPlay playback
-- `GET /api/airplay/status` - Get AirPlay status
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/start` | Start torrent from magnet link (auto-selects a file) |
+| `POST` | `/stop` | Stop current torrent |
+| `POST` | `/select` | Select file by index |
+| `GET` | `/status` | Progress, speeds, peers, selected index |
+| `GET` | `/files` | Torrent file list |
+| `GET` | `/stream` | Stream selected file (supports Range) |
+| `GET` | `/healthz` | Health check |
 
-### RTP/UDP
-- `POST /api/rtp/start` - Start RTP stream
-- `POST /api/rtp/stop` - Stop RTP stream
-- `GET /api/rtp/status` - Get RTP status
+## Configuration
 
-### Library
-- `GET /api/library` - Get library items
-- `GET /api/history` - Get watch history
-- `GET /api/movies/:id` - Get movie details
-- `POST /api/movies/:id/bookmark` - Toggle bookmark
-- `POST /api/movies/:id/resume` - Resume playback
+- `PORT` (default `8881`)
+- `HOST` (default `0.0.0.0`)
+- Downloads are stored under `./data/` (gitignored)
 
-### Subtitles
-- `GET /api/subtitles` - List available subtitles
-- `GET /subtitles/:index` - Stream subtitle file
+## Deployment (PM2)
 
-## 🛠️ Technology Stack
+```bash
+npm install -g pm2
+./pm2-control.sh start
+./pm2-control.sh logs
+```
 
-- **Backend**: Node.js, Express.js
-- **Streaming**: WebTorrent, FFmpeg
-- **Database**: SQLite with Sequelize ORM
-- **Protocols**: DLNA/UPnP, AirPlay (via Bonjour), RTP/UDP, SAP
-- **Frontend**: Vanilla JavaScript, CSS3
-- **Process Manager**: PM2
+## Project layout
 
-## 🎨 Themes
+`server.js` (API + streaming), `public/` (UI), `docs/ui-variants/` (not served), `ecosystem.config.js` + `pm2-control.sh` (PM2).
 
-The interface supports both light and dark themes with automatic system preference detection. Toggle via the settings panel.
+## Contributing / changes
 
-## 🐛 Troubleshooting
+- Contributing guide: `CONTRIBUTING.md`
+- Release notes: `CHANGELOG.md`
 
-### Stream won't start
-- Verify the magnet URI is valid
-- Check that port 8881 is not in use
-- Ensure sufficient disk space in `data/` directory
+## Legal
 
-### DLNA device not found
-- Verify device and server are on same network
-- Check firewall settings (allow UDP 1900)
-- Ensure device supports DLNA/UPnP
+You are responsible for complying with local laws and the terms of the content you download/stream.
 
-### RTP stream issues
-- Verify FFmpeg is installed: `ffmpeg -version`
-- Check multicast routing is enabled
-- Use VLC to test: Media → Open Network Stream → `rtp://@239.255.0.1:5004`
-
-## 🤝 Contributing
-
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details
-
-## 🙏 Acknowledgments
-
-- WebTorrent for the torrent streaming engine
-- FFmpeg for media transcoding
-- The open-source community
-
-## 📮 Support
-
-- **Issues**: GitHub Issues
-- **Discussions**: GitHub Discussions
-- **Documentation**: [Full Documentation](QUICK_START.md)
-
----
+## License
 
 **Note**: This software is for personal use. Ensure you have the right to download and stream any content.
