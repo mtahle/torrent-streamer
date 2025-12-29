@@ -1331,6 +1331,14 @@
             document.getElementById('pageTitle').textContent = titles[tabName];
             
             state.currentTab = tabName;
+            
+            // Load data for specific tabs
+            if (tabName === 'library') {
+                loadLibrary();
+                loadWatchHistory();
+            } else if (tabName === 'dashboard') {
+                updateStatus();
+            }
         }
         
         // ===== Theme Toggle =====
@@ -1709,6 +1717,7 @@
         let searchTimeout = null;
         
         async function loadLibrary() {
+            console.log("Loading library...");
             try {
                 const filter = document.getElementById('libraryFilter').value;
                 const search = document.getElementById('librarySearch').value;
