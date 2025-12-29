@@ -1,16 +1,12 @@
 # Contributing to Torrent Streamer
 
-First off, thank you for considering contributing to Torrent Streamer! 🎉
-
-## Code of Conduct
-
-This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code.
+Thanks for taking the time to contribute.
 
 ## How Can I Contribute?
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the existing issues as you might find that the problem has already been reported.
+Before filing a bug, please check existing issues in case it’s already reported.
 
 **When creating a bug report, please include:**
 - A clear and descriptive title
@@ -32,18 +28,16 @@ Enhancement suggestions are welcome! Please provide:
 1. **Fork** the repository
 2. **Create** a new branch from `main`: `git checkout -b feature/your-feature-name`
 3. **Make** your changes
-4. **Test** your changes thoroughly
-5. **Commit** your changes with clear, descriptive messages
+4. **Run** the app locally to verify your change
+5. **Commit** your changes with clear messages
 6. **Push** to your fork: `git push origin feature/your-feature-name`
-7. **Submit** a pull request
+7. **Open** a pull request
 
 #### Pull Request Guidelines
 
 - Keep changes focused and atomic
-- Include tests for new functionality
-- Update documentation as needed
+- Add/update docs when behavior changes
 - Follow the existing code style
-- Ensure all tests pass
 - Include a clear description of what the PR does
 
 ## Development Setup
@@ -56,33 +50,17 @@ cd torrent-streamer
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (same as start, but with NODE_ENV=development)
 npm run dev
 ```
 
 ## Code Style
 
 - Use ES6+ features and modules
-- Follow the existing code formatting
-- Use meaningful variable and function names
-- Add comments for complex logic
-- Keep functions small and focused
+- Keep changes small and readable
+- Avoid introducing new runtime dependencies unless necessary
 
-## Testing
-
-Before submitting changes, ensure:
-- The application starts without errors
-- All API endpoints work correctly
-- The web interface functions properly
-- Torrent streaming works as expected
-
-```bash
-# Test the application
-npm start
-
-# Test API endpoints
-curl http://localhost:8881/healthz
-```
+There’s no automated test suite currently; please include reproduction steps in the PR and do a quick manual check.
 
 ## Commit Message Guidelines
 
@@ -103,4 +81,4 @@ By contributing to Torrent Streamer, you agree that your contributions will be l
 
 Feel free to open an issue for any questions or reach out to the maintainers.
 
-Thank you for your contribution! 🚀
+Thank you for your contribution.
