@@ -1,290 +1,2094 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="utf-8">
-    <title>Torrent Streamer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Torrent Streamer - Multi-Protocol Streaming Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Stream torrents via HTTP, DLNA, RTP, and UDP protocols">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Metronic CSS -->
-    <link href="/assets/css/styles.css" rel="stylesheet">
-    <link href="/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet">
-    
-    <!-- Theme System CSS -->
-    <link href="/assets/css/themes.css" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { 
-            font-family: Inter, sans-serif; 
-            background-color: var(--theme-bg-primary);
-            color: var(--theme-text-primary);
-            transition: var(--theme-transition);
-        }
-        .container-fluid { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px; 
-            background-color: var(--theme-bg-primary);
-        }
-        .card { 
-            background: var(--theme-card-bg); 
-            border: 1px solid var(--theme-border-color);
-            border-radius: 8px; 
-            box-shadow: var(--theme-card-shadow); 
-            margin-bottom: 20px; 
-            transition: var(--theme-transition);
-        }
-        .card-header { 
-            padding: 20px 20px 0; 
-            border-bottom: 1px solid var(--theme-border-color); 
-            background-color: var(--theme-card-bg);
-            color: var(--theme-text-primary);
-        }
-        .card-body { 
-            padding: 20px; 
-            background-color: var(--theme-card-bg);
-            color: var(--theme-text-primary);
-        }
-        .row { display: flex; flex-wrap: wrap; margin: -10px; }
-        .col { flex: 1; padding: 10px; min-width: 250px; }
-        .stats-card { 
-            color: white; 
-            text-align: center; 
-            padding: 30px; 
-            border-radius: 12px; 
-            transition: var(--theme-transition);
-        }
-        .stats-number { font-size: 2.5rem; font-weight: bold; margin-bottom: 5px; }
-        .stats-label { opacity: 0.9; }
-        .form-control { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid var(--theme-input-border); 
-            background-color: var(--theme-input-bg);
-            color: var(--theme-text-primary);
-            border-radius: 6px; 
-            margin: 10px 0; 
-            transition: var(--theme-transition);
-        }
-        .form-control:focus {
-            border-color: var(--theme-button-bg);
-            outline: none;
-        }
-        .form-control::placeholder {
-            color: var(--theme-text-muted);
-        }
-        .btn { 
-            padding: 12px 24px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: 500; 
-            transition: var(--theme-transition);
-        }
-        .btn-primary { 
-            background: var(--theme-button-bg); 
-            color: white; 
-        }
-        .btn-primary:hover {
-            background: var(--theme-button-hover);
-        }
-        .btn-danger { background: #f05252; color: white; }
-        .btn-success { background: #10b981; color: white; }
-        .progress { 
-            background: var(--theme-bg-tertiary); 
-            border-radius: 6px; 
-            height: 8px; 
-            overflow: hidden; 
-        }
-        .progress-bar { 
-            background: var(--theme-button-bg); 
-            height: 100%; 
-            transition: width 0.3s, background-color 0.3s; 
-        }
-        .badge { 
-            padding: 4px 12px; 
-            border-radius: 12px; 
-            font-size: 0.875rem; 
-        }
-        .badge-success { 
-            background: #198754; 
-            color: white; 
-        }
-        .badge-primary { 
-            background: var(--theme-button-bg); 
-            color: white; 
+        /* ===== CSS Variables & Theme System ===== */
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
         }
         
-        /* Theme Controls Styling */
-        .theme-controls {
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #1e293b;
+            --card-bg: #1e293b;
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --card-bg: #ffffff;
+        }
+        
+        /* ===== Global Styles ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background var(--transition-base), color var(--transition-base);
+        }
+        
+        /* ===== Layout ===== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition-base);
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+            position: fixed;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+        
+        .nav-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: var(--spacing-sm);
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--bg-primary);
+        }
+        
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: var(--spacing-xl);
+            overflow-y: auto;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn var(--transition-base);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            justify-content: center;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        /* Progress Bar */
+        .progress {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            height: 8px;
+            overflow: hidden;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            transition: width var(--transition-base);
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .toast {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            min-width: 300px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            animation: slideIn var(--transition-base);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.info { border-left: 4px solid var(--info); }
+        
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .empty-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid var(--bg-tertiary);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 1000;
+                height: 100vh;
+            }
+            
+            .sidebar.collapsed {
+                transform: translateX(0);
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .content {
+                padding: var(--spacing-md);
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Hide class */
+        .hidden {
+            display: none !important;
+        }
+        /* Settings Styles */
+        .settings-section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .settings-heading {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-color);
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .theme-toggle {
+        .settings-heading i {
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin: 0;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .setting-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
             cursor: pointer;
-            user-select: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .3s;
+            border-radius: 26px;
         }
         
-        .theme-toggle:hover .theme-toggle-slider {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
         }
         
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .card-header > div {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .theme-controls {
-                align-self: flex-end;
-            }
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-stream"></i>
+                </div>
+                <h1 class="sidebar-title">Torrent Streamer</h1>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-tab="dashboard">
+                            <i class="nav-icon fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-tab="streaming">
+                            <i class="nav-icon fas fa-play"></i>
+                            <span>Start Stream</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-tab="protocols">
+                            <i class="nav-icon fas fa-network-wired"></i>
+                            <span>Protocols</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-tab="dlna">
+                            <i class="nav-icon fas fa-tv"></i>
+                            <span>DLNA Devices</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-tab="rtp">
+                            <i class="nav-icon fas fa-broadcast-tower"></i>
+                            <span>RTP/UDP</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                    <li class="nav-item">
+                        <a class="nav-link" data-tab="library">
+                            <i class="nav-icon fas fa-book"></i>
+                            <span>Library</span>
+                        </a>
+                    </li>
+                        <a class="nav-link" data-tab="settings">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
         
-        <!-- Header -->
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1>🎬 Torrent Streamer</h1>
-                        <p>Stream torrents directly in your browser</p>
-                    </div>
-                    <div class="theme-controls">
-                        <div class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Theme">
-                            <div class="theme-toggle-slider">
-                                <span class="theme-toggle-icon" id="theme-icon">☀️</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Row -->
-        <div class="row">
-            <div class="col">
-                <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                    <div class="stats-number" id="active-torrents">0</div>
-                    <div class="stats-label">Active Torrents</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                    <div class="stats-number" id="download-speed">0 MB/s</div>
-                    <div class="stats-label">Download Speed</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="stats-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                    <div class="stats-number" id="upload-speed">0 MB/s</div>
-                    <div class="stats-label">Upload Speed</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="stats-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                    <div class="stats-number" id="peer-count">0</div>
-                    <div class="stats-label">Connected Peers</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Main Content -->
-        <div class="row">
-            <div class="col" style="flex: 2;">
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="header-title" id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="tab-dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="activeStreamsCount">0</div>
+                            <div class="stat-label">Active Streams</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <div class="stat-value" id="dlnaDevicesCount">0</div>
+                            <div class="stat-label">DLNA Devices</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <div class="stat-value" id="downloadSpeed">0 MB/s</div>
+                            <div class="stat-label">Download Speed</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                            <div class="stat-value" id="uploadSpeed">0 MB/s</div>
+                            <div class="stat-label">Upload Speed</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-info-circle"></i>
+                                Current Stream
+                            </h2>
+                        </div>
+                        <div id="currentStreamInfo">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-video-slash"></i>
+                                </div>
+                                <h3 class="empty-title">No Active Stream</h3>
+                                <p class="empty-description">Start streaming a torrent to see details here</p>
+                                <button class="btn btn-primary" onclick="switchTab('streaming')">
+                                    <i class="fas fa-plus"></i>
+                                    Start Streaming
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Add Torrent -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Add New Torrent</h3>
-                    </div>
-                    <div class="card-body">
-                        <input type="text" id="magnet-input" class="form-control" placeholder="Paste magnet link here...">
-                        <div style="margin-top: 15px;">
-                            <button id="start-btn" class="btn btn-primary" style="margin-right: 10px;">
-                                ▶️ Start Streaming
-                            </button>
-                            <button id="stop-btn" class="btn btn-danger">
-                                ⏹️ Stop
-                            </button>
+                <!-- Streaming Tab -->
+                <div class="tab-content" id="tab-streaming">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-play-circle"></i>
+                                Start New Stream
+                            </h2>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Status -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Current Status</h3>
-                        <span class="badge badge-primary" id="status-badge">Idle</span>
-                    </div>
-                    <div class="card-body">
-                        <div id="status-text">No active torrents</div>
                         
-                        <div id="progress-container" style="margin-top: 20px; display: none;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Progress</span>
-                                <span id="progress-text">0%</span>
+                        <form id="streamForm">
+                            <div class="form-group">
+                                <label class="form-label">Magnet URI *</label>
+                                <input type="text" class="form-control" id="magnetInput" 
+                                       placeholder="magnet:?xt=urn:btih:..." required>
                             </div>
-                            <div class="progress">
-                                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" id="titleInput" 
+                                       placeholder="Movie or show title">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Quality</label>
+                                <input type="text" class="form-control" id="qualityInput" 
+                                       placeholder="1080p, 720p, 4K, etc.">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Year</label>
+                                <input type="number" class="form-control" id="yearInput" 
+                                       placeholder="2024" min="1900" max="2100">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" id="startButton">
+                                <i class="fas fa-play"></i>
+                                Start Streaming
+                            </button>
+                            <button type="button" class="btn btn-danger hidden" id="stopButton" onclick="stopStream()">
+                                <i class="fas fa-stop"></i>
+                                Stop Stream
+                            </button>
+                        
+                    </div>
+                    
+                    <!-- Stream Controls - Always Visible -->
+                    <div class="card" style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 16px;">Stream Controls</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                            <button type="button" class="btn btn-success" onclick="checkStreamAndShowStart()" style="width: 100%;">
+                                <i class="fas fa-play"></i> Start New Stream
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="stopStream()" style="width: 100%;">
+                                <i class="fas fa-stop"></i> Stop Stream
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="castToDLNA()" style="width: 100%;">
+                                <i class="fas fa-tv"></i> Cast to DLNA
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="castToAirPlay()" style="width: 100%;">
+                                <i class="fas fa-airplay"></i> Cast to AirPlay
+                            </button>
+                        </div>
+                        
+                        <!-- Playback Controls -->
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                            <h4 style="margin-bottom: 12px; font-size: 14px;">DLNA Playback Control</h4>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button onclick="controlDLNA('play')" class="btn btn-sm btn-success">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
+                                <button onclick="controlDLNA('pause')" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-pause"></i> Pause
+                                </button>
+                                <button onclick="controlDLNA('stop')" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-stop"></i> Stop
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- AirPlay Controls -->
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            <h4 style="margin-bottom: 12px; font-size: 14px;">AirPlay Playback Control</h4>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button onclick="controlAirPlay('play')" class="btn btn-sm btn-success">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
+                                <button onclick="controlAirPlay('pause')" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-pause"></i> Pause
+                                </button>
+                                <button onclick="controlAirPlay('stop')" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-stop"></i> Stop
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                    </div>
+                </div>
+                
+                <!-- Protocols Tab -->
+                <div class="tab-content" id="tab-protocols">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-network-wired"></i>
+                                Available Protocols
+                            </h2>
+                        </div>
+                        <div id="protocolsList">
+                            <div class="empty-state">
+                                <div class="spinner"></div>
+                                <p>Loading protocols...</p>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- File Selection -->
-                <div class="card" id="file-selection-card" style="display: none;">
-                    <div class="card-header">
-                        <h3>Select File</h3>
+                
+                <!-- DLNA Tab -->
+                <div class="tab-content" id="tab-dlna">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-tv"></i>
+                                DLNA Devices
+                            </h2>
+                            <button class="btn btn-sm btn-secondary" onclick="refreshDLNADevices()">
+                                <i class="fas fa-sync"></i>
+                                Refresh
+                            </button>
+                        </div>
+                        <div id="dlnaDevicesList">
+                            <div class="empty-state">
+                                <div class="spinner"></div>
+                                <p>Scanning for devices...</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <select id="file-select" class="form-control" style="margin-bottom: 15px;">
-                            <option>No files available</option>
+                </div>
+                
+                <!-- RTP/UDP Tab -->
+                <div class="tab-content" id="tab-rtp">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-broadcast-tower"></i>
+                                RTP/UDP Streaming
+                            </h2>
+                        </div>
+                        <div id="rtpContent">
+                            <div class="empty-state">
+                                <p class="empty-description">Start a torrent stream first to enable RTP/UDP</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                        <!-- Library Tab -->
+        <div class="tab-content" id="tab-library" style="display: none;">
+            <div style="margin-bottom: 24px;">
+                <h2 style="margin-bottom: 16px;">Media Library</h2>
+                
+                <!-- Search and Filters -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;">
+                        <input type="text" id="librarySearch" placeholder="Search movies..." class="form-control" onkeyup="searchLibrary()">
+                        <select id="libraryFilter" onchange="loadLibrary()" class="form-control" style="min-width: 150px;">
+                            <option value="">All Movies</option>
+                            <option value="ready">Ready</option>
+                            <option value="downloading">Downloading</option>
+                            <option value="bookmarked">Bookmarked</option>
                         </select>
-                        <button id="select-file-btn" class="btn btn-success">
-                            ✅ Select File
+                        <button onclick="loadLibrary()" class="btn btn-primary">
+                            <i class="fas fa-sync"></i> Refresh
                         </button>
                     </div>
                 </div>
-            </div>
-
-            <!-- Stream Player -->
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Stream Player</h3>
+                
+                <!-- Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div class="card" style="padding: 16px;">
+                        <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 4px;">Total Movies</div>
+                        <div style="font-size: 24px; font-weight: 600;" id="libraryTotal">0</div>
                     </div>
-                    <div class="card-body" style="text-align: center; min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
-                        <div id="stream-area">
-                            <div style="font-size: 4rem; margin-bottom: 20px;">🎥</div>
-                            <div style="color: #666; margin-bottom: 10px;">No stream available</div>
-                            <div style="color: #999; font-size: 0.9rem;">Start a torrent to begin streaming</div>
+                    <div class="card" style="padding: 16px;">
+                        <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 4px;">Ready to Stream</div>
+                        <div style="font-size: 24px; font-weight: 600; color: #10b981;" id="libraryReady">0</div>
+                    </div>
+                    <div class="card" style="padding: 16px;">
+                        <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 4px;">Bookmarked</div>
+                        <div style="font-size: 24px; font-weight: 600; color: #8b5cf6;" id="libraryBookmarked">0</div>
+                    </div>
+                </div>
+                
+                <!-- Movie Grid -->
+                <div id="moviesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 32px;">
+                    <!-- Movie cards will be inserted here -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="libraryEmpty" class="empty-state" style="display: none;">
+                    <i class="fas fa-film" style="font-size: 48px; opacity: 0.3;"></i>
+                    <h3>No Movies Found</h3>
+                    <p>Start streaming torrents to build your library</p>
+                </div>
+            </div>
+            
+            <!-- Watch History Section -->
+            <div class="card">
+                <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-history"></i>
+                    Watch History
+                </h3>
+                <div id="watchHistoryList">
+                    <!-- History items will be inserted here -->
+                </div>
+                <div id="historyEmpty" style="text-align: center; padding: 32px; color: var(--text-secondary); display: none;">
+                    <i class="fas fa-clock" style="font-size: 32px; opacity: 0.3; margin-bottom: 12px;"></i>
+                    <p>No watch history yet</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Settings Tab -->
+                                <div class="tab-content" id="tab-settings">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </h2>
                         </div>
                         
-                        <div id="stream-controls" style="margin-top: 20px; display: none;">
-                            <a href="#" id="stream-link" class="btn btn-primary" target="_blank" style="display: inline-block; text-decoration: none;">
-                                🎬 Open Stream
-                            </a>
-                            <div style="margin-top: 10px; color: #666; font-size: 0.85rem;">
-                                Or open in VLC: Media → Open Network Stream
+                        <div style="padding: 24px;">
+                            <!-- Appearance Settings -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-palette"></i>
+                                    Appearance
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Theme</label>
+                                        <p class="setting-description">Choose your preferred color scheme</p>
+                                    </div>
+                                    <select id="theme-select" class="form-control" style="width: auto;" onchange="changeTheme(this.value)">
+                                        <option value="auto">Auto (System)</option>
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Compact Mode</label>
+                                        <p class="setting-description">Reduce spacing for more content</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="compact-mode" onchange="toggleCompactMode(this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Streaming Settings -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-play-circle"></i>
+                                    Streaming
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Auto-save to Library</label>
+                                        <p class="setting-description">Automatically add streams to your library</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="auto-save" onchange="saveSetting('autoSave', this.checked)" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Default Quality</label>
+                                        <p class="setting-description">Preferred video quality for streams</p>
+                                    </div>
+                                    <select id="default-quality" class="form-control" style="width: auto;" onchange="saveSetting('defaultQuality', this.value)">
+                                        <option value="auto">Auto</option>
+                                        <option value="2160p">4K (2160p)</option>
+                                        <option value="1080p" selected>Full HD (1080p)</option>
+                                        <option value="720p">HD (720p)</option>
+                                        <option value="480p">SD (480p)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Buffer Size</label>
+                                        <p class="setting-description">Amount of data to buffer before playback</p>
+                                    </div>
+                                    <select id="buffer-size" class="form-control" style="width: auto;" onchange="saveSetting('bufferSize', this.value)">
+                                        <option value="1">1 MB (Fast)</option>
+                                        <option value="5" selected>5 MB (Balanced)</option>
+                                        <option value="10">10 MB (Smooth)</option>
+                                        <option value="20">20 MB (Very Smooth)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Network Settings -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-network-wired"></i>
+                                    Network
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Server Port</label>
+                                        <p class="setting-description">HTTP server listening port</p>
+                                    </div>
+                                    <input type="number" id="server-port" class="form-control" value="8881" style="width: 120px;" readonly>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">RTP Multicast Address</label>
+                                        <p class="setting-description">Multicast group for RTP/UDP streams</p>
+                                    </div>
+                                    <input type="text" id="rtp-address" class="form-control" value="239.255.0.1" style="width: 160px;" onchange="saveSetting('rtpAddress', this.value)">
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">RTP Port</label>
+                                        <p class="setting-description">UDP port for RTP streaming</p>
+                                    </div>
+                                    <input type="number" id="rtp-port" class="form-control" value="5004" style="width: 120px;" onchange="saveSetting('rtpPort', this.value)">
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Enable DLNA Discovery</label>
+                                        <p class="setting-description">Automatically discover DLNA devices</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="dlna-discovery" onchange="saveSetting('dlnaDiscovery', this.checked)" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Enable AirPlay Discovery</label>
+                                        <p class="setting-description">Automatically discover AirPlay devices</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="airplay-discovery" onchange="saveSetting('airplayDiscovery', this.checked)" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Library Settings -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-book"></i>
+                                    Library
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Items per Page</label>
+                                        <p class="setting-description">Number of items to show in library</p>
+                                    </div>
+                                    <select id="items-per-page" class="form-control" style="width: auto;" onchange="saveSetting('itemsPerPage', this.value)">
+                                        <option value="12">12</option>
+                                        <option value="24" selected>24</option>
+                                        <option value="48">48</option>
+                                        <option value="96">96</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Show Watch Progress</label>
+                                        <p class="setting-description">Display progress bars on library items</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="show-progress" onchange="saveSetting('showProgress', this.checked)" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Default Sort</label>
+                                        <p class="setting-description">How to sort library items by default</p>
+                                    </div>
+                                    <select id="default-sort" class="form-control" style="width: auto;" onchange="saveSetting('defaultSort', this.value)">
+                                        <option value="recent">Most Recent</option>
+                                        <option value="title">Title (A-Z)</option>
+                                        <option value="year">Year</option>
+                                        <option value="quality">Quality</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Advanced Settings -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-sliders-h"></i>
+                                    Advanced
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Enable Debug Mode</label>
+                                        <p class="setting-description">Show detailed logs in console</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="debug-mode" onchange="saveSetting('debugMode', this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Auto-refresh Interval</label>
+                                        <p class="setting-description">Dashboard refresh rate (seconds)</p>
+                                    </div>
+                                    <select id="refresh-interval" class="form-control" style="width: auto;" onchange="saveSetting('refreshInterval', this.value)">
+                                        <option value="5" selected>5 seconds</option>
+                                        <option value="10">10 seconds</option>
+                                        <option value="30">30 seconds</option>
+                                        <option value="60">1 minute</option>
+                                        <option value="0">Disabled</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Data Management -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-database"></i>
+                                    Data Management
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Clear Watch History</label>
+                                        <p class="setting-description">Remove all watch history entries</p>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="clearWatchHistory()">
+                                        <i class="fas fa-trash"></i> Clear History
+                                    </button>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Export Library</label>
+                                        <p class="setting-description">Download library as JSON</p>
+                                    </div>
+                                    <button class="btn btn-secondary" onclick="exportLibrary()">
+                                        <i class="fas fa-download"></i> Export
+                                    </button>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Reset All Settings</label>
+                                        <p class="setting-description">Restore default configuration</p>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="resetSettings()">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- About Section -->
+                            <div class="settings-section">
+                                <h3 class="settings-heading">
+                                    <i class="fas fa-info-circle"></i>
+                                    About
+                                </h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Version</label>
+                                        <p class="setting-description">Torrent Stream Server v1.0.0</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">GitHub</label>
+                                        <p class="setting-description">
+                                            <a href="https://github.com/yourusername/torrent-streamer" target="_blank" style="color: var(--primary-color);">
+                                                View on GitHub <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Documentation</label>
+                                        <p class="setting-description">
+                                            <a href="/QUICK_START.md" target="_blank" style="color: var(--primary-color);">
+                                                Quick Start Guide <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- JavaScript -->
-    <script src="/assets/js/core.bundle.js"></script>
-    <script src="/assets/js/app.js"></script>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // ===== Application State =====
+        const state = {
+            activeStream: null,
+            dlnaDevices: [],
+            protocols: null,
+            currentTab: 'dashboard'
+        };
+        
+        // ===== Utility Functions =====
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 200ms ease forwards';
+                setTimeout(() => toast.remove(), 200);
+            }, 3000);
+        }
+        
+        function switchTab(tabName) {
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.tab === tabName) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            // Update title
+            const titles = {
+                dashboard: 'Dashboard',
+                streaming: 'Start Stream',
+                protocols: 'Protocols',
+                dlna: 'DLNA Devices',
+                rtp: 'RTP/UDP Streaming',
+                settings: 'Settings'
+            ,
+                library: 'Media Library'};
+            document.getElementById('pageTitle').textContent = titles[tabName];
+            
+            state.currentTab = tabName;
+        }
+        
+        // ===== Theme Toggle =====
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        let currentTheme = 'dark';
+        
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', currentTheme);
+            themeToggle.querySelector('i').className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', currentTheme);
+        });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            currentTheme = savedTheme;
+            html.setAttribute('data-theme', currentTheme);
+            themeToggle.querySelector('i').className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        // ===== Navigation =====
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(link.dataset.tab);
+            });
+        });
+        
+        // ===== Mobile Menu =====
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+        
+        // ===== Initialize =====
+        async function initialize() {
+            await loadProtocols();
+            await refreshDLNADevices();
+            await checkStreamStatus();
+            
+            // Start polling
+            setInterval(checkStreamStatus, 2000);
+            setInterval(refreshDLNADevices, 10000);
+        }
+        
+        // ===== API Functions =====
+        async function loadProtocols() {
+            try {
+                const response = await fetch('/api/streaming/protocols');
+                const data = await response.json();
+                state.protocols = data.protocols;
+                
+                const container = document.getElementById('protocolsList');
+                container.innerHTML = Object.entries(data.protocols).map(([name, info]) => `
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h3 style="font-size: 16px; margin-bottom: 4px; text-transform: uppercase;">${name}</h3>
+                                <p style="color: var(--text-secondary); font-size: 14px;">${info.description}</p>
+                            </div>
+                            <span class="badge ${info.available ? 'badge-success' : 'badge-danger'}">
+                                ${info.available ? 'Available' : 'Unavailable'}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('Failed to load protocols', 'error');
+            }
+        }
+        
+        async function refreshDLNADevices() {
+            try {
+                const response = await fetch('/api/dlna/devices');
+                const data = await response.json();
+                state.dlnaDevices = data.devices;
+                
+                document.getElementById('dlnaDevicesCount').textContent = data.count;
+                
+                const container = document.getElementById('dlnaDevicesList');
+                if (data.devices.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="fas fa-tv"></i></div>
+                            <h3 class="empty-title">No Devices Found</h3>
+                            <p class="empty-description">Make sure your DLNA devices are on the same network</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = data.devices.map(device => `
+                        <div class="card" style="margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <h3 style="font-size: 16px; margin-bottom: 4px;">${device.name}</h3>
+                                    <p style="color: var(--text-secondary); font-size: 14px;">${device.host || 'Network device'}</p>
+                                </div>
+                                <button class="btn btn-sm btn-primary" onclick="castToDLNA('${device.id}', '${device.name}')">
+                                    <i class="fas fa-cast"></i>
+                                    Cast
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load DLNA devices:', error);
+            }
+        }
+        
+        async function checkStreamStatus() {
+            try {
+                const response = await fetch('/status');
+                const data = await response.json();
+                
+                if (data.running) {
+                    state.activeStream = data;
+                    document.getElementById('activeStreamsCount').textContent = '1';
+                    document.getElementById('downloadSpeed').textContent = `${(data.downloadSpeed || 0).toFixed(2)} MB/s`;
+                    document.getElementById('uploadSpeed').textContent = `${(data.uploadSpeed || 0).toFixed(2)} MB/s`;
+                    
+                    document.getElementById('startButton').classList.add('hidden');
+                    document.getElementById('stopButton').classList.remove('hidden');
+                    
+                    updateCurrentStreamInfo(data);
+                } else {
+                    state.activeStream = null;
+                    document.getElementById('activeStreamsCount').textContent = '0';
+                    document.getElementById('startButton').classList.remove('hidden');
+                    document.getElementById('stopButton').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to check status:', error);
+            }
+        }
+        
+        function updateCurrentStreamInfo(data) {
+            const container = document.getElementById('currentStreamInfo');
+            container.innerHTML = `
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 20px; margin-bottom: 8px;">${data.title || 'Untitled Stream'}</h3>
+                    <p style="color: var(--text-secondary);">${data.name || 'No file selected'}</p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 13px;">Progress</p>
+                        <p style="font-size: 18px; font-weight: 600;">${data.progress.toFixed(1)}%</p>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${data.progress}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 13px;">Peers</p>
+                        <p style="font-size: 18px; font-weight: 600;">${data.peers || 0}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 13px;">Download</p>
+                        <p style="font-size: 18px; font-weight: 600;">${(data.downloadSpeed || 0).toFixed(2)} MB/s</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 13px;">Upload</p>
+                        <p style="font-size: 18px; font-weight: 600;">${(data.uploadSpeed || 0).toFixed(2)} MB/s</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <a href="/stream" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-play"></i>
+                        Open Stream
+                    </a>
+                    <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(window.location.origin + '/stream'); showToast('Stream URL copied!', 'success')">
+                        <i class="fas fa-copy"></i>
+                        Copy URL
+                    </button>
+                </div>
+            `;
+        }
+        
+        // ===== Form Submission =====
+        document.getElementById('streamForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const button = document.getElementById('startButton');
+            button.disabled = true;
+            button.innerHTML = '<div class="spinner"></div> Starting...';
+            
+            try {
+                const response = await fetch('/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        magnet: document.getElementById('magnetInput').value,
+                        title: document.getElementById('titleInput').value || 'Untitled',
+                        quality: document.getElementById('qualityInput').value || 'Unknown',
+                        year: parseInt(document.getElementById('yearInput').value) || null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast('Stream started successfully!', 'success');
+                    switchTab('dashboard');
+                    await checkStreamStatus();
+                } else {
+                    showToast(data.error || 'Failed to start stream', 'error');
+                }
+            } catch (error) {
+                showToast('Network error: ' + error.message, 'error');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-play"></i> Start Streaming';
+            }
+        });
+        
+        async function stopStream() {
+            if (!confirm('Are you sure you want to stop the current stream?')) return;
+            
+            try {
+                const response = await fetch('/stop', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.stopped) {
+                    showToast('Stream stopped', 'success');
+                    await checkStreamStatus();
+                }
+            } catch (error) {
+                showToast('Failed to stop stream', 'error');
+            }
+        }
+        
+        async function castToDLNA(deviceId, deviceName) {
+            if (!state.activeStream) {
+                showToast('No active stream to cast', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/dlna/cast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast(`Casting to ${deviceName}`, 'success');
+                } else {
+                    showToast(data.error || 'Failed to cast', 'error');
+                }
+            } catch (error) {
+                showToast('Cast error: ' + error.message, 'error');
+            }
+        }
+        
+        // Initialize app
+        initialize();
+    
+        
+        async function checkStreamAndShowStart() {
+            try {
+                const response = await fetch('/status');
+                const data = await response.json();
+                if (data.running) {
+                    if (confirm('A stream is already running. Stop it and start a new one?')) {
+                        await stopStream();
+                        switchTab('streaming');
+                    }
+                } else {
+                    switchTab('streaming');
+                }
+            } catch (error) {
+                switchTab('streaming');
+            }
+        }
+        
+        async function castToDLNA() {
+            try {
+                const devices = await loadDLNADevices();
+                if (devices.length === 0) {
+                    showToast('No DLNA devices found. Scanning...', 'warning');
+                    switchTab('dlna');
+                    return;
+                }
+                
+                const deviceId = devices[0].id || devices[0].name;
+                const response = await fetch('/api/dlna/cast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    showToast(`Casting to ${devices[0].name}`, 'success');
+                } else {
+                    showToast('Cast failed: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showToast('DLNA error: ' + error.message, 'error');
+            }
+        }
+        
+        async function castToAirPlay() {
+            try {
+                const response = await fetch('/api/airplay/devices');
+                const data = await response.json();
+                
+                if (!data.devices || data.devices.length === 0) {
+                    showToast('No AirPlay devices found', 'warning');
+                    return;
+                }
+                
+                const deviceId = data.devices[0].id;
+                const castResponse = await fetch('/api/airplay/cast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId })
+                });
+                
+                const castData = await castResponse.json();
+                if (castResponse.ok) {
+                    showToast(`Casting to ${data.devices[0].name}`, 'success');
+                } else {
+                    showToast('AirPlay cast failed: ' + castData.error, 'error');
+                }
+            } catch (error) {
+                showToast('AirPlay error: ' + error.message, 'error');
+            }
+        }
+        
+        async function controlDLNA(action) {
+            try {
+                const response = await fetch('/api/dlna/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    showToast(`DLNA: ${action}`, 'success');
+                } else {
+                    showToast('Control failed: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showToast('DLNA control error: ' + error.message, 'error');
+            }
+        }
+        
+        async function controlAirPlay(action) {
+            try {
+                const response = await fetch('/api/airplay/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    showToast(`AirPlay: ${action}`, 'success');
+                } else {
+                    showToast('Control failed: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showToast('AirPlay control error: ' + error.message, 'error');
+            }
+        }
+            
+        // ===== Library Functions =====
+        
+        let libraryData = { movies: [], stats: {} };
+        let searchTimeout = null;
+        
+        async function loadLibrary() {
+            try {
+                const filter = document.getElementById('libraryFilter').value;
+                const search = document.getElementById('librarySearch').value;
+                
+                let url = '/api/library?limit=50';
+                if (filter === 'bookmarked') {
+                    url += '&bookmarked=true';
+                } else if (filter) {
+                    url += `&status=${filter}`;
+                }
+                if (search) {
+                    url += `&search=${encodeURIComponent(search)}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                libraryData.movies = data.movies || [];
+                displayMovies(libraryData.movies);
+                updateLibraryStats(data);
+            } catch (error) {
+                console.error('Failed to load library:', error);
+                showToast('Failed to load library', 'error');
+            }
+        }
+        
+        function displayMovies(movies) {
+            const grid = document.getElementById('moviesGrid');
+            const empty = document.getElementById('libraryEmpty');
+            
+            if (!movies || movies.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            grid.innerHTML = movies.map(movie => createMovieCard(movie)).join('');
+        }
+        
+        function createMovieCard(movie) {
+            const statusColors = {
+                ready: '#10b981',
+                downloading: '#f59e0b',
+                error: '#ef4444',
+                pending: '#6b7280'
+            };
+            
+            const statusColor = statusColors[movie.status] || '#6b7280';
+            const bookmarkIcon = movie.isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o';
+            const progress = movie.downloadProgress || 0;
+            
+            return `
+                <div class="card" style="overflow: hidden; transition: transform 0.2s;">
+                    <div style="aspect-ratio: 16/9; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; display: flex; align-items: center; justify-content: center;">
+                        ${movie.poster ? 
+                            `<img src="${movie.poster}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                            `<i class="fas fa-film" style="font-size: 48px; color: rgba(255,255,255,0.3);"></i>`
+                        }
+                        <div style="position: absolute; top: 8px; right: 8px;">
+                            <button onclick="toggleBookmark(${movie.id})" class="btn btn-sm" style="background: rgba(0,0,0,0.5); border: none; color: white; padding: 8px 12px;">
+                                <i class="fas ${bookmarkIcon}"></i>
+                            </button>
+                        </div>
+                        ${progress > 0 && progress < 100 ? `
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: rgba(0,0,0,0.3);">
+                            <div style="height: 100%; background: #10b981; width: ${progress}%;"></div>
+                        </div>` : ''}
+                    </div>
+                    <div style="padding: 16px;">
+                        <h4 style="margin: 0 0 8px 0; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${movie.title}">
+                            ${movie.title}
+                        </h4>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary);">
+                            ${movie.year ? `<span>${movie.year}</span>` : ''}
+                            ${movie.quality ? `<span>•</span><span>${movie.quality}</span>` : ''}
+                            ${movie.genre ? `<span>•</span><span>${movie.genre}</span>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+                            <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; background: ${statusColor}20; color: ${statusColor}; font-weight: 500;">
+                                ${movie.status}
+                            </span>
+                            ${movie.watchCount > 0 ? `<span style="font-size: 12px; color: var(--text-secondary);"><i class="fas fa-eye"></i> ${movie.watchCount}</span>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            ${movie.status === 'ready' ? `
+                            <button onclick="streamMovie(${movie.id})" class="btn btn-primary btn-sm" style="flex: 1;">
+                                <i class="fas fa-play"></i> Stream
+                            </button>` : ''}
+                            <button onclick="showMovieDetails(${movie.id})" class="btn btn-secondary btn-sm" style="flex: 1;">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function updateLibraryStats(data) {
+            document.getElementById('libraryTotal').textContent = data.total || 0;
+            
+            const ready = libraryData.movies.filter(m => m.status === 'ready').length;
+            const bookmarked = libraryData.movies.filter(m => m.isBookmarked).length;
+            
+            document.getElementById('libraryReady').textContent = ready;
+            document.getElementById('libraryBookmarked').textContent = bookmarked;
+        }
+        
+        function searchLibrary() {
+            if (searchTimeout) clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadLibrary();
+            }, 500);
+        }
+        
+        async function toggleBookmark(movieId) {
+            try {
+                const response = await fetch(`/api/movies/${movieId}/bookmark`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(data.isBookmarked ? 'Added to bookmarks' : 'Removed from bookmarks', 'success');
+                    await loadLibrary();
+                } else {
+                    showToast('Failed to toggle bookmark', 'error');
+                }
+            } catch (error) {
+                console.error('Failed to toggle bookmark:', error);
+                showToast('Failed to toggle bookmark', 'error');
+            }
+        }
+        
+        async function streamMovie(movieId) {
+            try {
+                const response = await fetch(`/api/movies/${movieId}`);
+                const data = await response.json();
+                
+                if (data.movie && data.movie.magnetUri) {
+                    // Stop current stream if any
+                    if (confirm('Start streaming this movie?')) {
+                        await fetch('/stop', { method: 'POST' });
+                        
+                        // Start new stream
+                        const startResponse = await fetch('/start', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                magnet: data.movie.magnetUri,
+                                title: data.movie.title,
+                                quality: data.movie.quality,
+                                year: data.movie.year
+                            })
+                        });
+                        
+                        if (startResponse.ok) {
+                            showToast('Stream started!', 'success');
+                            switchTab('dashboard');
+                        } else {
+                            showToast('Failed to start stream', 'error');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to stream movie:', error);
+                showToast('Failed to stream movie', 'error');
+            }
+        }
+        
+        function showMovieDetails(movieId) {
+            // TODO: Implement modal with full movie details
+            showToast('Movie details - Coming soon!', 'info');
+        }
+        
+        async function loadWatchHistory() {
+            try {
+                const response = await fetch('/api/history?limit=10');
+                const data = await response.json();
+                
+                const container = document.getElementById('watchHistoryList');
+                const empty = document.getElementById('historyEmpty');
+                
+                if (!data.history || data.history.length === 0) {
+                    container.innerHTML = '';
+                    empty.style.display = 'block';
+                    return;
+                }
+                
+                empty.style.display = 'none';
+                container.innerHTML = data.history.map(item => `
+                    <div style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; margin-bottom: 4px;">${item.movie?.title || 'Unknown Movie'}</div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">
+                                ${new Date(item.watchedAt).toLocaleString()} • 
+                                ${item.duration ? Math.floor(item.duration / 60) + ' min' : 'Unknown duration'}
+                                ${item.completed ? ' • <span style="color: #10b981;">Completed</span>' : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            ${!item.completed && item.position ? `
+                            <button onclick="resumeMovie(${item.movieId})" class="btn btn-sm btn-primary">
+                                <i class="fas fa-play"></i> Resume
+                            </button>` : ''}
+                            <button onclick="streamMovie(${item.movieId})" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-redo"></i> Watch Again
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+        
+        async function resumeMovie(movieId) {
+            try {
+                const response = await fetch(`/api/movies/${movieId}/resume`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(`Resuming from ${Math.floor(data.position / 60)}:${String(Math.floor(data.position % 60)).padStart(2, '0')}`, 'success');
+                    await streamMovie(movieId);
+                } else {
+                    await streamMovie(movieId);
+                }
+            } catch (error) {
+                await streamMovie(movieId);
+            }
+        }
+        
+        // Load library when switching to library tab
+        const originalSwitchTab = switchTab;
+        switchTab = function(tabName) {
+            originalSwitchTab(tabName);
+            if (tabName === 'library') {
+                loadLibrary();
+                loadWatchHistory();
+            }
+        };
+
+        
+        // ===== Settings Functions =====
+        function saveSetting(key, value) {
+            try {
+                const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+                settings[key] = value;
+                localStorage.setItem('appSettings', JSON.stringify(settings));
+                showToast(`Setting saved: ${key}`, 'success');
+            } catch (e) {
+                showToast('Failed to save setting', 'error');
+            }
+        }
+        
+        function loadSettings() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+                
+                // Load theme
+                const theme = settings.theme || 'auto';
+                document.getElementById('theme-select').value = theme;
+                applyTheme(theme);
+                
+                // Load other settings
+                if (settings.autoSave !== undefined) document.getElementById('auto-save').checked = settings.autoSave;
+                if (settings.defaultQuality) document.getElementById('default-quality').value = settings.defaultQuality;
+                if (settings.bufferSize) document.getElementById('buffer-size').value = settings.bufferSize;
+                if (settings.rtpAddress) document.getElementById('rtp-address').value = settings.rtpAddress;
+                if (settings.rtpPort) document.getElementById('rtp-port').value = settings.rtpPort;
+                if (settings.dlnaDiscovery !== undefined) document.getElementById('dlna-discovery').checked = settings.dlnaDiscovery;
+                if (settings.airplayDiscovery !== undefined) document.getElementById('airplay-discovery').checked = settings.airplayDiscovery;
+                if (settings.itemsPerPage) document.getElementById('items-per-page').value = settings.itemsPerPage;
+                if (settings.showProgress !== undefined) document.getElementById('show-progress').checked = settings.showProgress;
+                if (settings.defaultSort) document.getElementById('default-sort').value = settings.defaultSort;
+                if (settings.debugMode !== undefined) document.getElementById('debug-mode').checked = settings.debugMode;
+                if (settings.refreshInterval) document.getElementById('refresh-interval').value = settings.refreshInterval;
+                if (settings.compactMode) document.getElementById('compact-mode').checked = settings.compactMode;
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+        
+        function changeTheme(theme) {
+            saveSetting('theme', theme);
+            applyTheme(theme);
+        }
+        
+        function applyTheme(theme) {
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        }
+        
+        function toggleCompactMode(enabled) {
+            saveSetting('compactMode', enabled);
+            document.body.classList.toggle('compact-mode', enabled);
+        }
+        
+        async function clearWatchHistory() {
+            if (!confirm('Are you sure you want to clear all watch history? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/history', {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showToast('Watch history cleared', 'success');
+                    // Reload library if on that tab
+                    if (state.currentTab === 'library') {
+                        loadLibrary();
+                    }
+                } else {
+                    throw new Error('Failed to clear history');
+                }
+            } catch (error) {
+                showToast('Failed to clear history', 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        async function exportLibrary() {
+            try {
+                const response = await fetch('/api/library?limit=1000');
+                const data = await response.json();
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `torrent-library-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showToast('Library exported successfully', 'success');
+            } catch (error) {
+                showToast('Failed to export library', 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        function resetSettings() {
+            if (!confirm('Are you sure you want to reset all settings to defaults? This cannot be undone.')) {
+                return;
+            }
+            
+            localStorage.removeItem('appSettings');
+            showToast('Settings reset to defaults', 'success');
+            
+            // Reload page to apply defaults
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+        
+        // Initialize settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+                if (settings.theme === 'auto' || !settings.theme) {
+                    applyTheme('auto');
+                }
+            });
+        });
+
+    </script>
 </body>
 </html>

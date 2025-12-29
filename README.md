@@ -1,277 +1,224 @@
-# 🎬 Torrent Streamer
+# 🎬 Torrent Stream Server
 
-A lightweight, fast torrent streaming server built with Node.js and WebTorrent. Stream movies and videos directly from magnet links without waiting for the full download.
-
-![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![PM2](https://img.shields.io/badge/PM2-Ready-orange.svg)
+A powerful, feature-rich torrent streaming platform with multi-protocol support (HTTP, DLNA, RTP/UDP, AirPlay), library management, and a modern web interface.
 
 ## ✨ Features
 
-- 🚀 **Instant Streaming** - Start watching while downloading
-- 🌐 **Web Interface** - Simple, clean UI for easy management
-- 📱 **HTTP Range Support** - Compatible with VLC, browsers, and mobile players
-- 🔄 **Multi-file Torrents** - Choose specific files from torrent bundles
-- ⚡ **Real-time Progress** - Live download stats and peer information
-- 🛡️ **Production Ready** - PM2 integration with auto-restart
-- 📊 **RESTful API** - Full programmatic control
+### 🎯 Core Streaming
+- **Instant Streaming**: Start watching while downloading with WebTorrent
+- **HTTP Streaming**: Direct browser playback with range request support
+- **DLNA/UPnP Casting**: Cast to smart TVs and media devices
+- **AirPlay Support**: Stream to Apple TV and AirPlay devices
+- **RTP/UDP Multicast**: Efficient network streaming with SAP announcements
 
-## 🎥 Demo
+### 📚 Media Management
+- **Library System**: Organize your media collection
+- **Watch History**: Track viewing progress with resume functionality
+- **Bookmarks**: Save favorites for quick access
+- **Metadata Management**: Store titles, quality, year, and more
+- **Smart Filters**: Search and filter by status, bookmarks, and quality
 
-1. Paste a magnet link
-2. Click "Start" 
-3. Copy the stream URL to VLC or your favorite video player
-4. Enjoy instant streaming!
+### 🎨 User Interface
+- **Modern Dashboard**: Real-time streaming statistics and device discovery
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Dark/Light Themes**: Comfortable viewing in any environment
+- **Tab Navigation**: Organized sections for streaming, protocols, library, and settings
+
+### 🎯 Advanced Features
+- **Subtitle Support**: Auto-detection with 11 language support (.srt, .vtt, .sub, .ass, .ssa)
+- **Multi-Protocol Stats**: Real-time monitoring of HTTP, DLNA, RTP, and AirPlay streams
+- **Device Discovery**: Automatic detection of DLNA and AirPlay devices
+- **Session Management**: Track active streams and playback state
+- **Peer Information**: Monitor torrent health and download progress
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
-- **Node.js 18+** (ES Modules support required)
-- **npm** or **yarn**
+- Node.js 18+ and npm
+- FFmpeg (for RTP/UDP streaming)
+- PM2 (for process management)
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/mtahle/torrent-streamer.git
+git clone https://github.com/yourusername/torrent-streamer.git
 cd torrent-streamer
 
 # Install dependencies
 npm install
 
 # Start the server
-npm start
+pm2 start ecosystem.config.js
+
+# Access the web interface
+open http://localhost:8881
 ```
-
-The server will be available at `http://localhost:8881`
-
-### Production Deployment (PM2)
-
-For 24/7 operation with auto-restart:
-
-```bash
-# Install PM2 globally (if not already installed)
-npm install -g pm2
-
-# Start with PM2
-./pm2-control.sh start
-
-# Enable auto-start on boot
-pm2 startup
-pm2 save
-```
-
-## 📖 Usage
-
-### Web Interface
-
-1. Open `http://localhost:8881` in your browser
-2. Paste a magnet link in the input field
-3. Click **Start** to begin streaming
-4. Copy the **Stream URL** and open it in:
-   - **VLC**: `Media → Open Network Stream`
-   - **Browser**: Paste URL directly
-   - **Mobile Players**: Any player supporting HTTP streams
-
-### API Usage
-
-#### Start Streaming
-```bash
-curl -X POST http://localhost:8881/start \
-  -H "Content-Type: application/json" \
-  -d '{"magnet":"magnet:?xt=urn:btih:..."}'
-```
-
-#### Get Status
-```bash
-curl http://localhost:8881/status
-```
-
-#### Stream Video
-```bash
-# Direct streaming URL
-http://localhost:8881/stream
-```
-
-## 🔌 API Reference
-
-### Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/start` | Start torrent from magnet link |
-| `POST` | `/stop` | Stop current torrent |
-| `POST` | `/select` | Select specific file by index |
-| `GET` | `/status` | Get download progress and stats |
-| `GET` | `/files` | List all files in current torrent |
-| `GET` | `/stream` | Stream selected video file |
-| `GET` | `/healthz` | Health check endpoint |
-
-### API Examples
-
-#### Start Torrent
-```json
-POST /start
-{
-  "magnet": "magnet:?xt=urn:btih:dd8255ecdc7ca55fb0bbf81323d87062db1f6d1c&dn=Big+Buck+Bunny"
-}
-
-Response:
-{
-  "ok": true,
-  "infoHash": "dd8255ecdc7ca55fb0bbf81323d87062db1f6d1c",
-  "name": "Big Buck Bunny.mp4",
-  "size": 276134947,
-  "stream_url": "/stream",
-  "files_url": "/files"
-}
-```
-
-#### Get Status
-```json
-GET /status
-
-Response:
-{
-  "running": true,
-  "name": "Big Buck Bunny.mp4",
-  "infoHash": "dd8255ecdc7ca55fb0bbf81323d87062db1f6d1c",
-  "progress": 45.32,
-  "downloadSpeed": 1048576,
-  "uploadSpeed": 131072,
-  "peers": 12,
-  "selectedIndex": 0
-}
-```
-
-#### List Files
-```json
-GET /files
-
-Response:
-{
-  "files": [
-    {
-      "index": 0,
-      "name": "Big Buck Bunny.mp4",
-      "size": 276134947
-    },
-    {
-      "index": 1,
-      "name": "subtitle.srt",
-      "size": 84921
-    }
-  ],
-  "selectedIndex": 0
-}
-```
-
-## 🛠️ Management Scripts
-
-The included `pm2-control.sh` script provides easy management:
-
-```bash
-./pm2-control.sh status    # Show process status
-./pm2-control.sh logs      # View application logs
-./pm2-control.sh restart   # Restart the application
-./pm2-control.sh stop      # Stop the application
-./pm2-control.sh monitor   # Open PM2 monitoring dashboard
-./pm2-control.sh info      # Detailed process information
-```
-
-## 🏗️ Project Structure
-
-```
-torrent-streamer/
-├── server.js              # Main application server
-├── package.json           # Dependencies and scripts
-├── ecosystem.config.js    # PM2 configuration
-├── pm2-control.sh         # Management script
-├── public/
-│   └── index.html         # Web interface
-├── data/                  # Downloaded torrent files (gitignored)
-├── logs/                  # Application logs (gitignored)
-└── README.md              # This file
-```
-
-## ⚙️ Configuration
 
 ### Environment Variables
 
-- `PORT` - Server port (default: 8881)
-- `NODE_ENV` - Environment mode (development/production)
+Create a `.env` file:
 
-### PM2 Configuration
-
-The `ecosystem.config.js` file includes:
-- Auto-restart on crashes
-- Memory limit (1GB)
-- Log rotation
-- Multiple environments
-
-## 🔧 Development
-
-### Local Development
 ```bash
-npm start
-# or
-node server.js
+PORT=8881
+HOST=0.0.0.0
+NODE_ENV=production
 ```
 
-### Debug Mode
-```bash
-NODE_ENV=development npm start
+## 📖 Documentation
+
+- [Quick Start Guide](QUICK_START.md)
+- [VLC Streaming Guide](VLC_STREAMING_GUIDE.md)
+- [RTP/UDP VLC Guide](RTP_UDP_VLC_GUIDE.md)
+- [Subtitle Support](SUBTITLE_SUPPORT.md)
+- [DLNA Features](DLNA_FEATURES.md)
+- [UI Enhancements](UI_ENHANCEMENTS.md)
+- [Project Summary](PROJECT_SUMMARY.md)
+- [Roadmap](ROADMAP.md)
+
+## 🎮 Usage
+
+### Starting a Stream
+
+1. Navigate to the **Start Stream** tab
+2. Paste a magnet URI
+3. Optionally add metadata (title, quality, year)
+4. Click **Start Streaming**
+
+### Casting to Devices
+
+**DLNA:**
+1. Ensure your DLNA device is on the same network
+2. Click **Cast to DLNA** in Stream Controls
+3. Select your device from the list
+
+**AirPlay:**
+1. Ensure your AirPlay device is discoverable
+2. Click **Cast to AirPlay** in Stream Controls
+3. Select your Apple TV or AirPlay device
+
+### Managing Your Library
+
+1. Go to the **Library** tab
+2. View all your streamed content
+3. Use filters to find specific items
+4. Bookmark favorites or resume watching
+
+### RTP/UDP Streaming
+
+1. Navigate to the **RTP/UDP** tab
+2. Configure multicast settings
+3. Click **Start RTP Stream**
+4. Use VLC or compatible player to connect
+
+## 🏗️ Architecture
+
+```
+torrent-streamer/
+├── server.js              # Main Express server
+├── src/
+│   ├── airplay.js         # AirPlay device management
+│   ├── dlna.js            # DLNA/UPnP implementation
+│   ├── rtp-streamer.js    # RTP/UDP streaming
+│   ├── sap-announcer.js   # SAP announcements
+│   ├── database.js        # Sequelize ORM setup
+│   └── models/            # Database models
+│       ├── Movie.js
+│       ├── WatchHistory.js
+│       ├── Bookmark.js
+│       └── ActiveSession.js
+├── public/
+│   └── index.html         # Web UI
+├── data/                  # Media and database storage
+└── docs/                  # Documentation
 ```
 
-## 📊 Monitoring
+## 🔌 API Endpoints
 
-### PM2 Monitoring
-```bash
-pm2 monit              # Real-time monitoring
-pm2 logs torrent-streamer    # View logs
-pm2 info torrent-streamer    # Detailed metrics
-```
+### Streaming
+- `POST /start` - Start new torrent stream
+- `GET /stream` - HTTP stream endpoint
+- `GET /stop` - Stop active stream
+- `GET /status` - Get stream status
 
-### Health Check
-```bash
-curl http://localhost:8881/healthz
-```
+### DLNA
+- `GET /api/dlna/devices` - List DLNA devices
+- `POST /api/dlna/cast` - Cast to DLNA device
+- `POST /api/dlna/control` - Control DLNA playback
+- `GET /api/dlna/status` - Get DLNA status
 
-## 🐳 Docker Support
+### AirPlay
+- `GET /api/airplay/devices` - List AirPlay devices
+- `POST /api/airplay/cast` - Cast to AirPlay device
+- `POST /api/airplay/control` - Control AirPlay playback
+- `GET /api/airplay/status` - Get AirPlay status
 
-*Coming soon - Docker containerization for easy deployment*
+### RTP/UDP
+- `POST /api/rtp/start` - Start RTP stream
+- `POST /api/rtp/stop` - Stop RTP stream
+- `GET /api/rtp/status` - Get RTP status
+
+### Library
+- `GET /api/library` - Get library items
+- `GET /api/history` - Get watch history
+- `GET /api/movies/:id` - Get movie details
+- `POST /api/movies/:id/bookmark` - Toggle bookmark
+- `POST /api/movies/:id/resume` - Resume playback
+
+### Subtitles
+- `GET /api/subtitles` - List available subtitles
+- `GET /subtitles/:index` - Stream subtitle file
+
+## 🛠️ Technology Stack
+
+- **Backend**: Node.js, Express.js
+- **Streaming**: WebTorrent, FFmpeg
+- **Database**: SQLite with Sequelize ORM
+- **Protocols**: DLNA/UPnP, AirPlay (via Bonjour), RTP/UDP, SAP
+- **Frontend**: Vanilla JavaScript, CSS3
+- **Process Manager**: PM2
+
+## 🎨 Themes
+
+The interface supports both light and dark themes with automatic system preference detection. Toggle via the settings panel.
+
+## 🐛 Troubleshooting
+
+### Stream won't start
+- Verify the magnet URI is valid
+- Check that port 8881 is not in use
+- Ensure sufficient disk space in `data/` directory
+
+### DLNA device not found
+- Verify device and server are on same network
+- Check firewall settings (allow UDP 1900)
+- Ensure device supports DLNA/UPnP
+
+### RTP stream issues
+- Verify FFmpeg is installed: `ffmpeg -version`
+- Check multicast routing is enabled
+- Use VLC to test: Media → Open Network Stream → `rtp://@239.255.0.1:5004`
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details
 
-## ⚠️ Disclaimer
+## 🙏 Acknowledgments
 
-This software is for educational purposes. Users are responsible for ensuring they have proper rights to stream content. The developers are not responsible for any misuse of this software.
+- WebTorrent for the torrent streaming engine
+- FFmpeg for media transcoding
+- The open-source community
 
-## 🙋‍♂️ Support
+## 📮 Support
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/mtahle/torrent-streamer/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/mtahle/torrent-streamer/discussions)
-- 📧 **Contact**: [mtahle@users.noreply.github.com](mailto:mtahle@users.noreply.github.com)
-
-## 🌟 Acknowledgments
-
-- [WebTorrent](https://webtorrent.io/) - P2P streaming technology
-- [Express.js](https://expressjs.com/) - Web framework
-- [PM2](https://pm2.keymetrics.io/) - Process management
+- **Issues**: GitHub Issues
+- **Discussions**: GitHub Discussions
+- **Documentation**: [Full Documentation](QUICK_START.md)
 
 ---
 
-<div align="center">
-  <strong>Made with ❤️ for the streaming community</strong>
-</div>
+**Note**: This software is for personal use. Ensure you have the right to download and stream any content.
